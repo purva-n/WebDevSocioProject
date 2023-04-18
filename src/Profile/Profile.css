@@ -1,0 +1,88 @@
+div.container {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    background-color: rgb(118, 161, 231);
+  }
+  
+  body{
+    
+  background-color: rgb(182, 202, 234);
+  
+  }
+  .app__header {
+    display: flex;
+    background-color: rgb(118, 161, 231);
+    padding: 20px;
+    border-bottom: 1px solid lightgray;
+    object-fit: contain;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 3;
+    padding-right: 600px;
+  }
+  
+  .app_headerImage {
+    height: 50px;
+    width: 150px;
+    object-fit: contain;
+  }
+  
+  div.Profile {
+    margin: center;
+    position: absolute;
+    top: 20%;
+    left: 35%;
+    background-color: white;
+    padding: 2em 1em;
+    width: 400px;
+    border-radius: 1em;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.205);
+    background-color: rgb(118, 161, 231);
+  }
+  
+  div.group {
+    vertical-align: middle;
+    margin: 0.5em;
+    height: 32px;
+  }
+  
+  div.birthday {
+    font-size: x-large;
+    margin: 0.6em;
+  }
+  
+  div.color-box {
+    position: relative;
+    top: 6px;
+    display: inline-block;
+    width: 50px;
+    height: 20px;
+    border: 1px solid darkgray;
+  }
+  
+  label {
+    margin: 0px;
+  }
+  
+  h1 {
+    font-size: large;
+    margin: 0em 0.8em;
+  }
+  
+  h2 {
+    display: inline;
+    font-weight: bold;
+    font-size: medium;
+    margin: inherit;
+  }
+  
+  input[type="color"] {
+    position: relative;
+    top: 4px;
+  }
+  .uploader{
+    width:100px;
+  }

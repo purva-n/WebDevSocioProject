@@ -1,0 +1,35 @@
+.imageupload {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: lightskyblue;
+    border: 1px solid rgb(43, 41, 41);
+    border-radius: 10px;
+    
+}
+
+.imageupload_progress {
+    width: 100%;
+
+}
+
+.upload__caption{
+ background-color: transparent;
+ border-radius: 10px;
+}
+
+.upload_fileEntry {
+    align-items: center;
+}
+
+.upload__button {
+
+}
+
+.imageupload_progress {
+    width: 100%;
+
+}

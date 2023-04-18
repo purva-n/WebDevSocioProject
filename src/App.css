@@ -1,0 +1,83 @@
+* {
+  margin: 0;
+}
+
+.app {
+  height: 100vh;
+  background-color: var(--background);
+}
+
+.App {
+  top: 50%;
+  left: 50%;
+}
+
+.app__posts {
+  top: 50%;
+    left: 50%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  background-color: var(--background);
+}
+
+.app__header {
+  display: flex;
+  /*background-color: rgb(0,0,20);*/
+  background-color: var(--header-bg);
+  padding: 20px;
+  border-bottom: 1px solid blue;
+  object-fit: contain;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+  padding-right: 600px;
+}
+
+.app_headerImage {
+  padding-left: 600px;
+  height: 100px;
+  width: 150px;
+}
+
+.app_Image {
+  height: 50px;
+  width: 150px;
+  object-fit: contain;
+}
+
+.app__signup {
+  display: flex;
+  flex-direction: column;
+}
+
+.app__loginContainer {
+  padding-right: 20px;
+}
+
+.app__uploadBox {
+  padding-left: 25%;
+  padding-top: 58px;
+  padding-bottom: 10px;
+  background-color: var(--background);
+}
+
+.app {
+  color: var(--text-primary);
+  background-color: var(--background);
+  padding: 20px;
+  height: calc(100vh - 40px);
+  font-size: large;
+  font-weight: bold;
+  transition: all .5s;
+}
+
+button {
+  color: var(--text-primary);
+  background-color: var(--background);
+  border: 2px var(--text-primary) solid;
+  float: right;
+  transition: all .5s;
+}

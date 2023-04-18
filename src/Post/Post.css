@@ -1,0 +1,105 @@
+.post {
+    max-width: 600px;
+    background-color: lightskyblue;
+    border: 1px solid lightgrey;
+    margin-bottom: 45px;
+}
+
+.post__image {
+    width: 100%;
+    object-fit: contain;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+}
+
+.post__text{
+    font-weight: normal;
+    padding: 20px;
+}
+
+.post__header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.post__delete {
+         margin-top: 5%;
+         margin-left: 90%;
+         margin-right: 20%;
+}
+
+.post__avatar {
+    margin-right: 10px;
+}
+
+.post__commentBox {
+    display: flex;
+    margin-top: 10px;
+    
+}
+
+.post__comment {
+    padding: 20px;
+}
+
+.post__input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    background-color: lightgrey;
+    border-top: 1px solid black;
+}
+
+.post__button {
+    flex: 0;
+    border: none;
+    border-top: 1px solid black;
+    background-color: transparent;
+    color: black
+}
+
+
+.like-button-wrapper {
+  &:hover:not(.liked) {
+    svg {
+      transform: translateY(-2px) rotate(8deg);
+      #thumb-end {
+        transform: rotate(45deg) translate(5px, -45px);
+      }
+    }
+  }
+
+  &.liked {
+    svg {
+      animation: hop 500ms;
+    }
+  }
+
+  svg {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    transform: translateY(-2px);
+    transition: transform 0.2s;
+
+    #thumb-end {
+      transition: transform 0.2s;
+    }
+  }
+}
+
+@keyframes hop {
+  0% {
+    transform: rotate(8deg) translateY(-2px);
+  }
+  30% {
+    transform: rotate(-14deg) translateY(-5px);
+  }
+  65% {
+    transform: rotate(7deg) translateY(2px);
+  }
+  100% {
+    transform: rotate(0deg) translateY(-2px);
+  }
+}
