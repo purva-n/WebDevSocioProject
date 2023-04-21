@@ -11,6 +11,7 @@ import {
 } from '@charkour/react-reactions';
 import Avatar from '@material-ui/core/Avatar'
 import { useNavigate } from 'react-router-dom';
+import {NavLink} from "reactstrap";
 
 function Post( {postId, user, username, postusername, caption, imageUrl, fileName}) {
   const navi= useNavigate();
@@ -124,32 +125,25 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
 
   return (
 
-    <div className='post'>
+    <div className='card post'>
 
         {postusername === username ?(
                         <div className='post__delete'>
-                                    <button onClick={() => deletePost()}>X</button>
-                                </div>
+                            <button onClick={() => deletePost()}><i className="bi bi-trash"></i></button>
+                        </div>
                     ):(
-                        <div className='post__delete'>
-                                </div>
+                        <div className='post__delete'></div>
                     )}
-        <div className='post__header'>
+        <div className='post__header row'>
         {/* header => avatar + user name */}
-            <Avatar 
-                className='post__avatar'
-                alt='RafehQazi'
-              
-            />
-            <h3 onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h3>
-            <h4 className='post__text'>{caption}</h4>
-
-
+            <Avatar className='post__avatar col-2' alt=''/>
+            <h6 className="col-4 fw-bold" onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h6>
+            <h6 className='col-6 post__text'>{caption}</h6>
         </div>
 
 
         {/* Photo */}
-        {console.log(imageUrl)}
+        {/*console.log(imageUrl)*/}
 
             {caption.includes('mp4') ?(
                 <video className='post__image' controls>

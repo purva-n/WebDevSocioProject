@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
 import logo from '../images/title.png';
-import bg from '../images/bg.png';
+import bg from '../images/bg2.jpeg';
+import connect from '../images/connect.jpg';
 import '../App.css';
+import './Home.css';
 import Post from '../Post/Post'
 import Pages from '../Pages'
 import  {db, auth}  from '../firebase'
@@ -12,6 +14,8 @@ import {Button, Input} from '@material-ui/core';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import useLocalStorage from 'use-local-storage';
 import { useNavigate } from 'react-router-dom';
+import PostList from "../PostList/PostList";
+import {light} from "@material-ui/core/styles/createPalette";
 var axios = require('axios');
 
 function getModalStyle() {
@@ -89,11 +93,13 @@ useEffect(() => {
 }, [user, username]);
 
 useEffect(() => {
-  db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
-    console.log(snapshot);
-    setPosts(snapshot.docs.map(doc => ({
-      id: doc.id,
-      post: doc.data()})));
+
+    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        console.log(snapshot);
+        setPosts(snapshot.docs.map(doc => ({
+            id: doc.id,
+            post: doc.data()
+        })));
     });
 
   db.collection('pages').onSnapshot(snapshot => {
@@ -103,15 +109,6 @@ useEffect(() => {
       snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
     });
 }, []);
-
-useEffect(() => {
-    setFilteredPosts(posts.filter((post) =>
-            post.post.username.toLowerCase().includes(search.toLowerCase()) ||
-            post.post.caption.toLowerCase().includes(search.toLowerCase())
-      ));
-
-    console.log('Your value: ' + filteredPosts.length);
-  }, [search, posts]);
 
 
 //--------------------------
@@ -223,32 +220,35 @@ const createUser = (user) => {
         onClose={() => setOpen(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
         <center><img className='app_Image' src={logo} alt='header image' /></center>
-          <center><h1>Register Yourself</h1></center>
+          <center><h3>Register Yourself</h3></center>
           <form className='app__signup'>
+              <div className="row">
+                  <div className="col-1"><i className=""></i></div>
+              </div>
           <Input
-              placeholder='username'
+              placeholder='Create username'
               type='text'
               value={username}
               onChange={(e)=> setUsername(e.target.value)}
             />
 
             <Input
-              placeholder='email'
+              placeholder='E-mail'
               type='text'
               value={email}
               onChange={(e)=> setEmail(e.target.value)}
             />
 
             <Input
-              placeholder='password'
+              placeholder='Password'
               type='password'
               value={password}
               onChange={(e)=> setPassword(e.target.value)}
             />
 
-            <Button type='submit' onClick={signUp}>SignUP</Button>
+            <Button type='submit' onClick={signUp}>Sign Up</Button>
             <center>Already have an account yet? <Button onClick={registerFromSignUp}>Login</Button></center>
           </form>
         </div>
@@ -259,13 +259,13 @@ const createUser = (user) => {
         onClose={() => setOpenPagesModal(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
           <center><img className='app_Image' src={logo} alt='header' /></center>
           <form className='app__signup'>
 
           <select name="pages" onChange={(e)=> setNewPageId(e.target.value)}>
                   <option value="">Choose any page</option>
-          {
+                    {
                          pages.length && pages.map(({id, page}) => (
                          <option value={id}>{page.name}</option>
                          ))
@@ -284,7 +284,7 @@ const createUser = (user) => {
               onClose={() => setCreatePagesModal(false)}
               >
 
-              <div style={modalStyle} className={classes.paper}>
+              <div style={modalStyle} className={`card ${classes.paper}`}>
                 <center><img className='app_Image' src={logo} alt='header image' /></center>
                 <form className='app__signup'>
 
@@ -303,90 +303,90 @@ const createUser = (user) => {
         onClose={() => setOpenSignIn(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
           <center><img className='app_Image' src={logo} alt='header image' /></center>
           <form className='app__signup'>
-            <Input
-              placeholder='email'
-              type='text'
-              value={email}
-              onChange={(e)=> setEmail(e.target.value)}
-            />
+              <div className="mt-2 row">
+                  <div className="col-1"><i className="bi bi-envelope bi-envelope-at"></i></div>
+                  <div className="col-11">
+                      <Input
+                      className="w-100"
+                      placeholder='E-mail address'
+                      type='text'
+                      value={email}
+                      onChange={(e)=> setEmail(e.target.value)}/>
+                  </div>
+              </div>
 
-            <Input
-              placeholder='password'
-              type='password'
-              value={password}
-              onChange={(e)=> setPassword(e.target.value)}
-            />
+              <div className="mt-2 row">
+                  <div className="col-1"><i className="bi bi-key"></i></div>
+                  <div className="col-11">
+                      <Input
+                          className="w-100"
+                          placeholder='Password'
+                          type='password'
+                          value={password}
+                          onChange={(e)=> setPassword(e.target.value)}
+                      />
+                  </div>
+              </div>
 
-            <Button type='submit' onClick={signIn}><h2>Login</h2></Button>
-            <center>Dont have an account yet? <Button onClick={signUpFromLogin}>Sign Up</Button></center>
+            <button className="btn btn-outline-dark mt-2" type='submit' onClick={signIn}>Sign In</button>
+              <div className="row mt-2">
+                  <div className="col-8">Don't have an account yet?</div>
+                  <div className="col-4"><button type="button" className="btn btn-outline-primary" onClick={signUpFromLogin}>Sign Up</button></div>
+              </div>
           </form>
         </div>
       </Modal>
 {/* ------------------------------------------------------------------ */}
 
       {/* Header */}
-      <div className='app__header' data-theme={theme}>
-        <center><img
-          className='app_headerImage'
-          src={logo}
-          alt='header image'
-        /></center>
-      </div>
+      {/*<div className='app__header'>*/}
+      {/*  <img className='app_headerImage' src={logo} alt='header image'/>*/}
+      {/*</div>*/}
 
-      <div className='app__uploadBox'>
-      {user?.displayName ? (
-        <br/>
-      ):(
-        <h4>Sorry, you need to login to upload</h4>
-      )}
-      </div>
-      <div className='app__uploadBox' data-theme={theme}>
-            {user ?(
-                        <div className='app__loginContainer'>
-                        <button onClick={switchTheme}>
-                                                        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-                                                      </button>
-                                                      <button onClick={openPagesMod}>Pages</button>
-
-                                                      <button onClick={()=>{navi("/chat",{state:{username,password}})}}>Chat Feature</button>
-                            <button onClick={() => auth.signOut()}>Logout</button>
+        {user ?(
+            <div>
+                <div>
+                    <p className="h2">What's up {user.displayName}!</p>
+                </div>
+                <div className="row">
+                    <div className="col-4"></div>
+                    <div className="col-4">
+                        <div className='app__posts' data-theme={theme}>
+                            <PostList class filteredposts={filteredPosts} user={user} username={username} postList={posts}/>
                         </div>
-                    ):(
-                      <div className='app__loginContainer'>
-                        <button color="#841584" onClick={() => setOpenSignIn(true)} >Sign In</button>
-                        <button color="#841584" onClick={() => setOpen(true)} >Sign Up</button>
-                      </div>
-                    )}
-
-
-
-            {user?.displayName ? (
-
-                          <div className='app__posts' data-theme={theme}>
-                                  <div className='app__postsLeft'>
-                                  <center><input type="text" placeholder="Search" onChange={(e) => setSearch(e.target.value)} /></center>
-                                  <ImageUpload username={user.displayName}/>
-                                  {
-                                    filteredPosts && filteredPosts.map(({id, post}) =>(
-                                      <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
-                                    ))
-                                  }
-                                  </div>
-
-
-
-                                </div>
-                        ):(
-                          <div className='app__posts'><img src={bg} /></div>
-                        )}
-
-
+                    </div>
+                    <div className="col-4 app__loginContainer">
+                        <div className="btn-group-vertical ">
+                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={switchTheme}>Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme</button>
+                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={openPagesMod}>Pages</button>
+                            {/*<button onClick={()=>{navi("/chat",{state:{username,password}})}}>Chat Feature</button>*/}
+                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={() => auth.signOut()}>Logout</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-    </div>
-  );
+
+        ):(
+            <div className="flex-container">
+                <div className="fill"><img src={bg} /> </div>
+                <div className="flex-box"></div>
+                <div className="col-xxl-4 col-lg-4 col-md-6 col-sm-8 col-xs-6 app__loginContainer">
+                    <div className="card" style={getModalStyle()}>
+                        <div className="card-img" id="sign_block"><img className="connect" src={connect}/></div>
+                        <div className="btn-group card-footer app__loginContainer"> {/*col-xxl-4 col-lg-4 col-md-6 col-sm-8 col-xs-6*/}
+                            <button type="button" className="btn" color="#841584" onClick={() => setOpenSignIn(true)} ><i className="bi bi-person-check-fill"></i> Sign In</button>
+                            <button color="#841584" className="btn" onClick={() => setOpen(true)} ><i className="bi bi-person-add"></i> Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+    </div>);
 }
 
 export default Home;
+
