@@ -93,22 +93,29 @@ useEffect(() => {
 }, [user, username]);
 
 useEffect(() => {
-
-    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
         console.log(snapshot);
         setPosts(snapshot.docs.map(doc => ({
             id: doc.id,
-            post: doc.data()
-        })));
+            post: doc.data()})));
     });
 
-  db.collection('pages').onSnapshot(snapshot => {
-      setPages(snapshot.docs.map(doc => ({
-          id: doc.id,
-          page: doc.data()})));
-      snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
+    db.collection('pages').onSnapshot(snapshot => {
+        setPages(snapshot.docs.map(doc => ({
+            id: doc.id,
+            page: doc.data()})));
+        snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
     });
 }, []);
+
+useEffect(() => {
+    setFilteredPosts(posts.filter((post) =>
+        post.post.username.toLowerCase().includes(search.toLowerCase()) ||
+        post.post.caption.toLowerCase().includes(search.toLowerCase())
+    ));
+
+    console.log('Your value: ' + filteredPosts.length);
+}, [search, posts]);
 
 
 //--------------------------
@@ -352,7 +359,7 @@ const createUser = (user) => {
                     <div className="col-4"></div>
                     <div className="col-4">
                         <div className='app__posts' data-theme={theme}>
-                            <PostList class filteredposts={filteredPosts} user={user} username={username} postList={posts}/>
+                            <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
                         </div>
                     </div>
                     <div className="col-4 app__loginContainer">

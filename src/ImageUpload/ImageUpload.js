@@ -15,7 +15,7 @@ function ImageUpload({username}) {
     const [image, setImage] = useState(null);
     //const [url, setUrl] = useState('');
     const [progress, setProgress] = useState(0);
-    const [isSuccess, setIsSuccess] = useState(false);
+    //const [isSuccess, setIsSuccess] = useState(false);
     const [caption, setCaption] = useState('');
 
     const handleChange = (e) =>  {
@@ -54,13 +54,12 @@ function ImageUpload({username}) {
                             caption: caption,
                             fileName: image.name,
                             imageUrl: url,
-                            username: username 
+                            username: username
                         });
                         setProgress(0);
                         setCaption('');
                         setImage(null);
                     });
-                setIsSuccess(true);
             }
         );
     };
@@ -71,12 +70,11 @@ function ImageUpload({username}) {
       <div className="flex-container">
           <div className="flex-box"><input className='upload_fileEntry form-control' type='file' onChange={handleChange} /></div>
           <div className="flex-box">
-              <Box>
                   <Button type="button" className='upload__button btn btn-success' onClick={handleUpload}>
-                      {isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-dark">POST</span>) }
+                      {/*{isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-dark">POST</span>) }*/}
+                      POST
                   </Button>
-                  <LinearProgress variant="determinate" value={progress} />
-              </Box>
+                  {/*<LinearProgress variant="determinate" value={progress} />*/}
           </div>
       </div>
 
@@ -84,4 +82,4 @@ function ImageUpload({username}) {
   )
 }
 
-export default ImageUpload
+export default ImageUpload;
