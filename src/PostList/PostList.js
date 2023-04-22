@@ -9,12 +9,6 @@ const PostList = ({filteredposts, user, username, postList}) => {
     const [posts, setPosts] = useState(postList);
     const [filteredPosts, setFilteredPosts] = useState(filteredposts);
     useEffect(() => {
-        setFilteredPosts(posts.filter((post) =>
-            post.post.username.toLowerCase().includes(search.toLowerCase()) ||
-            post.post.caption.toLowerCase().includes(search.toLowerCase())
-        ));
-        //console.log('Your value: ' + filteredPosts.length);
-
         db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
             console.log(snapshot);
             setPosts(snapshot.docs.map(doc => ({
@@ -22,6 +16,12 @@ const PostList = ({filteredposts, user, username, postList}) => {
                 post: doc.data()
             })));
         });
+
+        setFilteredPosts(posts.filter((post) =>
+            post.post.username.toLowerCase().includes(search.toLowerCase()) ||
+            post.post.caption.toLowerCase().includes(search.toLowerCase())
+        ));
+        //console.log('Your value: ' + filteredPosts.length);
     }, [search, posts]);
 
     return(

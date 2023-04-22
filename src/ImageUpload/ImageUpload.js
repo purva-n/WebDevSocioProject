@@ -61,7 +61,6 @@ function ImageUpload({username}) {
                         setImage(null);
                     });
                 setIsSuccess(true);
-                setProgress(0);
             }
         );
     };
@@ -72,17 +71,12 @@ function ImageUpload({username}) {
       <div className="flex-container">
           <div className="flex-box"><input className='upload_fileEntry form-control' type='file' onChange={handleChange} /></div>
           <div className="flex-box">
-              { isSuccess ? (
-                      <Box color="success.main" display="flex">
-                          <CheckIcon color="success" />
-                          <Typography>Success</Typography>
-                      </Box>
-                  ) : (
-              <Box marginY={3}>
-                  <Button type="button" className='upload__button btn btn-primary' onClick={handleUpload}>Post</Button>
+              <Box>
+                  <Button type="button" className='upload__button btn btn-success' onClick={handleUpload}>
+                      {isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-info">POST</span>) }
+                  </Button>
                   <LinearProgress variant="determinate" value={progress} />
-              </Box> )
-              }
+              </Box>
           </div>
       </div>
 
