@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
-import logo from '../images/title.png';
+import logo from '../images/socio.png';
 import bg from '../images/bg2.jpeg';
 import connect from '../images/connect.jpg';
 import '../App.css';
@@ -151,19 +151,24 @@ const createUser = (user) => {
       //   });
 }
 //----------------------------
- const signUp = (event) => {
-   event.preventDefault();
-   auth
-   .createUserWithEmailAndPassword(email, password)
-   .then((authUser) => {
-    createUser({username:username,secret:password})
-     return authUser.user.updateProfile({
-       displayName: username
-     })
-   })
-   .catch((error) => alert(error.message));
+  const signUp = (event) => {
+    event.preventDefault();
 
- }
+    if (username.length > 5) {
+      alert('Username must be 5 characters or less');
+      return;
+    }
+
+    auth
+    .createUserWithEmailAndPassword(email, password)
+    .then((authUser) => {
+      createUser({ username: username, secret: password });
+      return authUser.user.updateProfile({
+        displayName: username,
+      });
+    })
+    .catch((error) => alert(error.message));
+  };
 
  const signIn = (event) => {
    event.preventDefault();
@@ -348,47 +353,94 @@ const createUser = (user) => {
       </Modal>
 {/* ------------------------------------------------------------------ */}
 
-      {/* Header */}
-      {/*<div className='app__header'>*/}
-      {/*  <img className='app_headerImage' src={logo} alt='header image'/>*/}
-      {/*</div>*/}
-
-        {user ?(
-            <div>
-                <div className="row">
-                    <div className="col-4"></div>
-                    <div className="col-4">
-                        <div className='app__posts' data-theme={theme}>
-                            <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
-                        </div>
-                    </div>
-                    <div className="col-4 app__loginContainer">
-                        <div className="btn-group-vertical ">
-                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-dark' : 'btn-light'}`} onClick={switchTheme}>Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme</button>
-                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={openPagesMod}>Pages</button>
-                            {/*<button onClick={()=>{navi("/chat",{state:{username,password}})}}>Chat Feature</button>*/}
-                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={() => auth.signOut()}>Logout</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        ):(
-            <div className="flex-container">
-                <div className="fill"><img src={bg} /> </div>
-                <div className="flex-box"></div>
-                <div className="col-xxl-4 col-lg-4 col-md-6 col-sm-8 col-xs-6 app__loginContainer">
-                    <div className="card" style={getModalStyle()}>
-                        <div className="card-img" id="sign_block"><img className="connect" src={connect}/></div>
-                        <div className="btn-group card-footer app__loginContainer"> {/*col-xxl-4 col-lg-4 col-md-6 col-sm-8 col-xs-6*/}
-                            <button type="button" className="btn" color="#841584" onClick={() => setOpenSignIn(true)} ><i className="bi bi-person-check-fill"></i> Sign In</button>
-                            <button color="#841584" className="btn" onClick={() => setOpen(true)} ><i className="bi bi-person-add"></i> Sign Up</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      {/*Header*/}
+      <div className="app__header">
+        <div className="home-component h4">
+          <button className="btn btn-outline-dark">Home</button>
+        </div>
+        <img className="logo-img-component" src={logo} alt="header image"/>
+        {user ? (
+            <div
+                className="display-name-component h4">{user.displayName}</div>
+        ) : (
+            <div className="display-name-component h2"></div>
         )}
+      </div>
 
+      {user ? (
+          <div className="container home-page-top">
+            <div className="row">
+              <div className="col-md-2 align-content-center"></div>
+              <div className="col-md-8 align-content-center">
+                <div className="app__posts" data-theme={theme}>
+                  <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
+                </div>
+              </div>
+              <div className="col-md-2 app__loginContainer">
+                <div className="btn-group-vertical ">
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={switchTheme}
+                  >
+                    Switch to {theme === "light" ? "Dark" : "Light"} Theme
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={openPagesMod}
+                  >
+                    Pages
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={() => auth.signOut()}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+      ) : (
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-md-6">
+                <img src={bg} className="img-fluid" alt="background" />
+              </div>
+              <div className="col-md-3 app__loginContainer">
+                <div className="card" style={getModalStyle()}>
+                  <div className="card-img" id="sign_block">
+                    <img className="connect" src={connect} alt="connect" />
+                  </div>
+                  <div className="btn-group card-footer app__loginContainer">
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => setOpenSignIn(true)}
+                    >
+                      <i className="bi bi-person-check-fill"></i> Sign In
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setOpen(true)}
+                    >
+                      <i className="bi bi-person-plus-fill"></i> Sign Up
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      )}
     </div>);
 }
 

@@ -16,6 +16,7 @@
     height: 100vh;
     object-fit: contain;
 }
+
 .fill img {
     flex-shrink: 0;
     max-width: 100%;
@@ -30,4 +31,8 @@
 
 #sign_block {
     text-align: center;
+}
+
+.home-page-top {
+    margin-top: 70px;
 }

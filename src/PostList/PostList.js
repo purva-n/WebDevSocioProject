@@ -8,9 +8,6 @@ const PostList = ({filteredPosts, user, username, setSearch}) => {
 
     return(
                 <div className='app__postsLeft'>
-                    <div>
-                        <p className="h2">What's up {user.displayName}!</p>
-                    </div>
                     <SearchBar setSearch={setSearch} />
                     <ImageUpload username={user.displayName}/>
                     {
