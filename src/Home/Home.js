@@ -348,9 +348,6 @@ const createUser = (user) => {
 
         {user ?(
             <div>
-                <div>
-                    <p className="h2">What's up {user.displayName}!</p>
-                </div>
                 <div className="row">
                     <div className="col-4"></div>
                     <div className="col-4">
@@ -360,7 +357,7 @@ const createUser = (user) => {
                     </div>
                     <div className="col-4 app__loginContainer">
                         <div className="btn-group-vertical ">
-                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={switchTheme}>Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme</button>
+                            <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-dark' : 'btn-light'}`} onClick={switchTheme}>Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme</button>
                             <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={openPagesMod}>Pages</button>
                             {/*<button onClick={()=>{navi("/chat",{state:{username,password}})}}>Chat Feature</button>*/}
                             <button type="button" className={`btn btn-outline-info ${theme === 'light' ? 'btn-outline-dark' : 'btn-outline-light'}`} onClick={() => auth.signOut()}>Logout</button>

@@ -22,17 +22,16 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
   const [counters, setCounters] = useState([]);
   const [showSelector, setShowSelector] = useState(false);
 
-  const handleAdd = () => setShowSelector(true);
+  const handleAdd = () => setShowSelector(false);
 
   const handleSelect = (emoji) => {
       const index = _.findIndex(counters, { by: username })
       if (index > -1) {
         setCounters([
             ...counters.slice(0, index),
-            { emoji, by: username },
             ...counters.slice(index + 1),
         ]);
-        setShowSelector(true);
+        setShowSelector(false);
       } else {
         setCounters([
             ...counters, { emoji, by: username }
@@ -127,17 +126,20 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
 
     <div className='card post'>
 
-        {postusername === username ?(
-                        <div className='post__delete'>
-                            <button onClick={() => deletePost()}><i className="bi bi-trash"></i></button>
-                        </div>
-                    ):(
-                        <div className='post__delete'></div>
-                    )}
+
         <div className='post__header row'>
         {/* header => avatar + user name */}
-            <Avatar className='post__avatar col-2' alt=''/>
-            <h6 className="col-4 fw-bold" onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h6>
+            <Avatar className='post__avatar col-1' alt=''/>
+            <h4 className="col-9 fw-bold" onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h4>
+            {postusername === username ?(
+                <div className="col-1">
+                    <button  onClick={() => deletePost()}><i className="bi bi-trash"></i></button>
+                </div>
+            ):(
+                <div className='col-1'></div>
+            )}
+        </div>
+        <div>
             <h6 className='col-6 post__text'>{caption}</h6>
         </div>
 
@@ -171,7 +173,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
         {user  && (
           <form className='post__commentBox'>
           <input 
-            className='post__input'
+            className='post__input form-control'
             type='text'
             placeholder='Comment here'
             value={comment}
@@ -179,7 +181,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
           />
 
           <button 
-            className='post__button'
+            className='post__button btn btn-primary'
             disabled={!comment}
             type='submit'
             onClick={postComment}

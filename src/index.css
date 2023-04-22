@@ -21,9 +21,9 @@ code {
 }
 
 [data-theme='dark'] {
-  --background: black;
-  --header-bg: darkblue;
-  --text-primary: white;
+  --background: darkblue;
+  --header-bg: midnightblue;
+  --text-primary: lightblue;
   --text-secondary: grey;
   --accent: darkred;
 }

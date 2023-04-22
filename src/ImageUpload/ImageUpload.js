@@ -73,7 +73,7 @@ function ImageUpload({username}) {
           <div className="flex-box">
               <Box>
                   <Button type="button" className='upload__button btn btn-success' onClick={handleUpload}>
-                      {isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-info">POST</span>) }
+                      {isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-dark">POST</span>) }
                   </Button>
                   <LinearProgress variant="determinate" value={progress} />
               </Box>
