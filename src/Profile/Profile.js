@@ -19,7 +19,7 @@ function Profile() {
     const now = new Date(Date.now());
     const defaultBirthday = new Date(now.getTime() + 86400000);
     const {state} = useLocation();
-    console.log(state)
+    console.log(state);
     const username = state.postusername;
     const myusername = state.username;
     const [editMode, setEditMode] = useState(false);
@@ -41,7 +41,9 @@ function Profile() {
     useEffect(() => {
           db.collection('profile').where('username', '==', username).get()
                 .then(doc => {
-                    setImageUrl(doc.imageUrl);
+                    doc.forEach((docu) => {
+                        setImageUrl(docu.get('imageUrl'));
+                    })
           });
      });
 
@@ -106,8 +108,7 @@ function Profile() {
                             </div>
 
                             <div className="row">
-                                <div className="col-6"><h5>Profile Picture</h5></div>
-                                <div className="col-6"><img className='post__image' src = {imageUrl} /></div>
+                                <img className='profile__img align-items-center' src ={imageUrl}  alt="profile photo"/>
                             </div>
                             {
                                 username === myusername ? (

@@ -144,8 +144,6 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
   return (
 
     <div className='card post'>
-
-
         <div className='post__header row'>
         {/* header => avatar + user name */}
             <Avatar className='post__avatar col-1' alt=''/>

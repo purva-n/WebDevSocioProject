@@ -16,6 +16,7 @@ import useLocalStorage from 'use-local-storage';
 import { useNavigate } from 'react-router-dom';
 import PostList from "../PostList/PostList";
 import {light} from "@material-ui/core/styles/createPalette";
+import firebase from "firebase";
 var axios = require('axios');
 
 function getModalStyle() {
@@ -162,9 +163,17 @@ const createUser = (user) => {
     .createUserWithEmailAndPassword(email, password)
     .then((authUser) => {
       createUser({ username: username, secret: password });
-      return authUser.user.updateProfile({
-        displayName: username,
-      });
+      authUser.user.updateProfile({
+          displayName: username,
+      }).then(r  => console.log("user display name set"));
+
+      db.collection('profile').add({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          username: username,
+          email: email,
+          imageUrl: "",
+          fileName: ""
+      }).then(r => console.log("profile added in profile section"));
     })
     .catch((error) => alert(error.message));
   };
@@ -407,7 +416,7 @@ const createUser = (user) => {
               </div>
               <div className="col-md-8 align-content-center">
                 <div className="app__posts" data-theme={theme}>
-                  <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
+                  <PostList filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
                 </div>
               </div>
               <div className="col-md-2 align-content-center"></div>
