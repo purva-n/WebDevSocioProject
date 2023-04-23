@@ -22,23 +22,43 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
   const [counters, setCounters] = useState([]);
   const [showSelector, setShowSelector] = useState(false);
 
-  const handleAdd = () => setShowSelector(false);
+  const handleAdd = () => {
+      if(!showSelector) {
+        setCount(count - 1);
+      } else {
+        setCount(count + 1);
+      }
+    setShowSelector(true);
+  }
 
   const handleSelect = (emoji) => {
-      const index = _.findIndex(counters, { by: username })
+    const index = _.findIndex(counters, { by: username })
+
       if (index > -1) {
         setCounters([
             ...counters.slice(0, index),
             ...counters.slice(index + 1),
         ]);
+        if(!showSelector) {
+          setCount(count - 1);
+        }else{
+          setCount(count + 1);
+        }
         setShowSelector(false);
       } else {
         setCounters([
             ...counters, { emoji, by: username }
         ]);
+        if(!showSelector) {
+          setCount(count - 1);
+        }else{
+          setCount(count + 1);
+        }
         setShowSelector(false);
       }
-      postLike({ emoji, by: username });
+      if(showSelector) {
+        postLike({emoji, by: username});
+      }
     };
 
   const postLike = (likeObject) => {
@@ -106,7 +126,6 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
       };
   }, [postId]);
 
-
   const postComment = (event) => {
     event.preventDefault();
 
@@ -165,7 +184,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
 
           {comments.map((comment)=>(
             <p>
-              <strong>{comment.username}: </strong>{comment.text}{count}
+              <strong>{comment.username}: </strong>{comment.text}
             </p>
           ))}
         </div>

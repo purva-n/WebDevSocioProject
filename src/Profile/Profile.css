@@ -35,12 +35,11 @@ div.container {
     position: absolute;
     top: 20%;
     left: 35%;
-    background-color: var(--background);
+    background-color: #B0E0E6FF;
     padding: 2em 1em;
     width: 400px;
     border-radius: 1em;
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.205);
-    background-color: rgb(118, 161, 231);
   }
   
   div.group {

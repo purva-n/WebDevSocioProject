@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import '../App.css';
 import EditableUserProfile from '../components/EditableUserProfile';
 import UserProfile from '../components/UserProfile';
-import logo from '../images/title.png';
+import logo from '../images/socio.png';
 import { useLocation } from 'react-router-dom'
 import  {db, auth}  from '../firebase'
 import ProfileUpload from '../ImageUpload/ProfileUpload';
 import { useNavigate } from 'react-router-dom';
+import useLocalStorage from "use-local-storage";
 
 function randomColor() {
     return "#" + Math.floor(Math.random()*16777215).toString(16);
@@ -28,11 +29,16 @@ function Profile() {
     const [day, setDay] = useState(defaultBirthday.getDate());
     const [color, setColor] = useState(randomColor());
     const [imageUrl, setImageUrl] = useState('');
+    const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
+    const switchTheme = () => {
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+    }
 
     const stored = {name, month, day, color};
 
     useEffect(() => {
-
           db.collection('profile').where('username', '==', username).get()
                 .then(doc => {
                     setImageUrl(doc.imageUrl);
@@ -51,54 +57,70 @@ function Profile() {
     }
     
     return (
-        <div style={{backgroundColor: "powderblue"}}>
-            <div className="container">
-                {/* Header */}
-                <div className='app__header'>
-                    <img onClick={()=>{navi("*")}}
-                         className='app_headerImage'
-                         src={logo}
-                         alt='header'
-                    />
+            <div className="profile-app">
+                {/*Header*/}
+                <div className="app__header">
+                    <img className="logo-img-component" src={logo} alt="header image"/>
                 </div>
 
-                <div className="Profile">
+                <div className="container home-page-top">
+                    <div className='row'>
+                        <div className="col-md-2 app__loginContainer">
+                            <div className="btn-group-vertical ">
+                                <button
+                                    type="button"
+                                    className={`btn btn-outline-info ${
+                                        theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                                    }`}
+                                    onClick={()=>{navi("*")}}>
+                                    Home</button>
+                                <button
+                                    type="button"
+                                    className={`btn btn-outline-info ${
+                                        theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                                    }`}
+                                    onClick={() => {auth.signOut(); navi("*")}}
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                        <div className="col-8 Profile">
+                            <div className="row" style={{backgroundColor: '#B0E0E6FF'}}><center className="h2">Profile Info</center></div>
+                            <div className="mt-2">
+                                {editMode
+                                    ? <>
+                                        <EditableUserProfile
+                                            stored={stored}
+                                            editCompleteCallback={handleEditComplete}
+                                        />
+                                    </>
+                                    : <>
+                                        <UserProfile
+                                            stored={stored}
+                                            state={state}
+                                            startEditCallback={() => setEditMode(true)}
+                                        />
+                                    </>
+                                }
+                            </div>
 
-                    <div className="row" style={{backgroundColor: "powderblue"}}><center className="h2">Profile Info</center></div>
-                    <div className="mt-2">
-                        {editMode
-                            ? <>
-
-                                <EditableUserProfile
-                                    stored={stored}
-                                    editCompleteCallback={handleEditComplete}
-                                />
-                            </>
-                            : <>
-                                <UserProfile
-                                    stored={stored}
-                                    state={state}
-                                    startEditCallback={() => setEditMode(true)}
-                                />
-                            </>
-                        }
+                            <div className="row">
+                                <div className="col-6"><h5>Profile Picture</h5></div>
+                                <div className="col-6"><img className='post__image' src = {imageUrl} /></div>
+                            </div>
+                            {
+                                username === myusername ? (
+                                    <ProfileUpload className="uploader" username={username}/>
+                                ) : (
+                                    <></>
+                                )
+                            }
+                        </div>
+                        <div className="col-2"></div>
                     </div>
-
-                    <div className="row">
-                        <div className="col-6"><h5>Profile Picture</h5></div>
-                        <div className="col-6"><img className='post__image' src = {imageUrl} /></div>
-                    </div>
-                    {
-                        username === myusername ? (
-                            <ProfileUpload className="uploader" username={username}/>
-                        ) : (
-                            <></>
-                        )
-                    }
                 </div>
             </div>
-        </div>
-
     );
 }
 

@@ -54,8 +54,6 @@ function Home() {
   const [openPages, setOpenPages] = useState(false);
   const [openPagesModal, setOpenPagesModal] = useState(false);
   const [createPagesModal, setCreatePagesModal] = useState(false);
-
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -64,7 +62,7 @@ function Home() {
   const [search, setSearch] = useState('');
 
   const [user, setUser] = useState(null);
-
+  const [postusername, setPostUserName] = useState('');
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
   const switchTheme = () => {
@@ -80,6 +78,7 @@ useEffect(() => {
       console.log(authUser);
       setUser(authUser);
       setUsername(authUser.displayName);
+      setPostUserName(authUser.displayName);
     }
     else{
       //logout
@@ -283,9 +282,10 @@ const createUser = (user) => {
                          ))
                     }
           </select>
-
-            <button type='submit' onClick={openNewPage}>Open Page</button>
-            <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+            <input type='text' style={{ visibility: "hidden" }}></input>
+            <button type='submit' className='btn btn-dark' onClick={openNewPage}>Open Page</button>
+            <center>Wish to create a new page?</center>
+            <center><Button onClick={createPagesMod} className='btn btn-dark'>Create New Page</Button></center>
           </form>
         </div>
       </Modal>
@@ -357,8 +357,8 @@ const createUser = (user) => {
       <div className="app__header">
         <img className="logo-img-component" src={logo} alt="header image"/>
         {user ? (
-            <div
-                className="display-name-component h4">{user.displayName}</div>
+
+            <div className="display-name-component h4" onClick={() => {navi("/profile",{state:{postusername, username}})}}><i className="bi bi-person-fill"></i>{user.displayName}</div>
         ) : (
             <div className="display-name-component h2"></div>
         )}

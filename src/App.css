@@ -6,6 +6,12 @@
   height: 100vh;
   background-color: var(--background);
 }
+.profile-app {
+  height: 100vh;
+  top: 50%;
+  left: 50%;
+  background-color: var(--background);
+}
 
 .App {
   top: 50%;
@@ -47,9 +53,10 @@
 }
 
 .display-name-component {
+  display: flex; /* use flexbox layout */
+  align-items: center; /* vertically center items */
   margin-left: 500px;
 }
-
 
 /*.app_headerImage {
   padding-left: 600px;

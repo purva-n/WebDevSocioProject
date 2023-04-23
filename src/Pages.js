@@ -11,6 +11,7 @@ import {Button, Input} from '@material-ui/core';
 import PagePostUpload from './ImageUpload/PagePostUpload';
 import useLocalStorage from 'use-local-storage';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 import PostList from "./PostList/PostList";
 import connect from "./images/connect.jpg";
 
@@ -53,6 +54,7 @@ const Pages = ({route}) => {
 
       console.log(state);
       const [username, setUsername] = useState(state.username);
+      const [postusername, setPostUserName] = useState(state.username);
       const [password, setPassword] = useState(state.password);
       const [email, setEmail] = useState(state.email);
       const [newPageName, setNewPageName] = useState(state.newPageName);
@@ -180,10 +182,9 @@ const Pages = ({route}) => {
       }
 
       return (
+
         <div className="App">
-
     {/* ------------------------------------------------------------------ */}
-
           <Modal
             open={open}
             onClose={() => setOpen(false)}
@@ -197,7 +198,7 @@ const Pages = ({route}) => {
                   placeholder='username'
                   type='text'
                   value={username}
-                  onChange={(e)=> setUsername(e.target.value)}
+                  onChange={(e)=> {setUsername(e.target.value); setPostUserName(e.target.value)}}
                 />
 
                 <Input
@@ -296,9 +297,8 @@ const Pages = ({route}) => {
           {/*Header*/}
           <div className="app__header">
             <img className="logo-img-component" src={logo} alt="header image"/>
-            {user ? (
-                <div
-                    className="display-name-component h4">{user.displayName}</div>
+            {username ? (
+                <div className="display-name-component h4" onClick={() => {navi("/profile",{state:{postusername, username}})}}><i className="bi bi-person-fill"></i>{username}</div>
             ) : (
                 <div className="display-name-component h2"></div>
             )}
@@ -359,7 +359,6 @@ const Pages = ({route}) => {
                   <div className="col-md-2 align-content-center"></div>
                 </div>
               </div>
-          )}
         </div>
       );
 }
