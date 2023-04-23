@@ -355,9 +355,6 @@ const createUser = (user) => {
 
       {/*Header*/}
       <div className="app__header">
-        <div className="home-component h4">
-          <button className="btn btn-outline-dark">Home</button>
-        </div>
         <img className="logo-img-component" src={logo} alt="header image"/>
         {user ? (
             <div
@@ -370,12 +367,6 @@ const createUser = (user) => {
       {user ? (
           <div className="container home-page-top">
             <div className="row">
-              <div className="col-md-2 align-content-center"></div>
-              <div className="col-md-8 align-content-center">
-                <div className="app__posts" data-theme={theme}>
-                  <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
-                </div>
-              </div>
               <div className="col-md-2 app__loginContainer">
                 <div className="btn-group-vertical ">
                   <button
@@ -383,10 +374,8 @@ const createUser = (user) => {
                       className={`btn btn-outline-info ${
                           theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                       }`}
-                      onClick={switchTheme}
-                  >
-                    Switch to {theme === "light" ? "Dark" : "Light"} Theme
-                  </button>
+                      onClick={()=>{navi("*")}}>
+                    Home</button>
                   <button
                       type="button"
                       className={`btn btn-outline-info ${
@@ -401,12 +390,27 @@ const createUser = (user) => {
                       className={`btn btn-outline-info ${
                           theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                       }`}
-                      onClick={() => auth.signOut()}
+                      onClick={switchTheme}
+                  >
+                    Switch to {theme === "light" ? "Dark" : "Light"} Theme
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={() => {auth.signOut(); navi("*")}}
                   >
                     Logout
                   </button>
                 </div>
               </div>
+              <div className="col-md-8 align-content-center">
+                <div className="app__posts" data-theme={theme}>
+                  <PostList class filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
+                </div>
+              </div>
+              <div className="col-md-2 align-content-center"></div>
             </div>
           </div>
       ) : (

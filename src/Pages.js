@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
-import logo from './images/title.png';
+import logo from './images/socio.png';
 import bg from './images/bg.png';
 import './App.css';
 import Post from './Post/Post'
@@ -11,6 +11,8 @@ import {Button, Input} from '@material-ui/core';
 import PagePostUpload from './ImageUpload/PagePostUpload';
 import useLocalStorage from 'use-local-storage';
 import { useNavigate, useLocation } from 'react-router-dom';
+import PostList from "./PostList/PostList";
+import connect from "./images/connect.jpg";
 
 function getModalStyle() {
   const top = 50 ;
@@ -74,6 +76,7 @@ const Pages = ({route}) => {
       db.collection('pages')
       .doc(newPageId)
       .collection('posts')
+      .orderBy('timestamp',"desc")
       .onSnapshot(snapshot => {
           setPagePosts(snapshot.docs.map((doc) => ({
                id: doc.id,
@@ -290,50 +293,73 @@ const Pages = ({route}) => {
           </Modal>
     {/* ------------------------------------------------------------------ */}
 
-          {/* Header */}
-          <div className='app__header' data-theme={theme}>
-            <center><img
-              className='app_headerImage'
-              src={logo}
-              alt='header'
-            /></center>
+          {/*Header*/}
+          <div className="app__header">
+            <img className="logo-img-component" src={logo} alt="header image"/>
+            {user ? (
+                <div
+                    className="display-name-component h4">{user.displayName}</div>
+            ) : (
+                <div className="display-name-component h2"></div>
+            )}
           </div>
 
-          <div className='app__uploadBox'>
-          {user?.displayName ? (
-            <br/>
-          ):(
-            <h4>Sorry, you need to login to upload</h4>
-          )}
-          </div>
-          <div className='app__uploadBox' data-theme={theme}>
-                <div className='app__loginContainer'>
-                                                <button onClick={() => auth.signOut()}>Logout</button>
-                                            </div>
-
-                <button onClick={switchTheme}>
-                                    Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-                                  </button>
-                                  <button onClick={openPagesMod}>Pages</button>
-                                  <button onClick={()=>{navi("/",{state:{username,password}})}}>Back to Home</button>
-
-                <div className='app__posts' data-theme={theme}>
-
-                                                      <div className='app__postsLeft'>
-                                                      <PagePostUpload username={username} newPageId={newPageId} />
-                                                      {
-                                                        pagePosts && pagePosts.map(({id, post}) =>(
-                                                          <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
-                                                        ))
-                                                      }
-                                                      </div>
-
-
-
-                                                    </div>
-
-
+          <div className="container home-page-top">
+                <div className="row">
+                  <div className="col-md-2 app__loginContainer">
+                    <div className="btn-group-vertical ">
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={()=>{navi("*")}}>
+                        Home</button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={openPagesMod}
+                      >
+                        Pages
+                      </button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={switchTheme}
+                      >
+                        Switch to {theme === "light" ? "Dark" : "Light"} Theme
+                      </button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={() => {auth.signOut(); navi("*")}}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-md-8 align-content-center">
+                    <div className='app__posts' data-theme={theme}>
+                      <div className='app__postsLeft'>
+                        <PagePostUpload username={username} newPageId={newPageId} />
+                        {
+                          pagePosts && pagePosts.map(({id, post}) =>(
+                              <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-2 align-content-center"></div>
                 </div>
+              </div>
+          )}
         </div>
       );
 }

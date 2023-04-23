@@ -17,6 +17,7 @@ function PagePostUpload({username, newPageId}) {
     };
 
     const handleUpload = () => {
+        if(image.name == null) {return;}
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
             "state_changed",
@@ -62,9 +63,9 @@ function PagePostUpload({username, newPageId}) {
   return (
     <div className='imageupload'>
       <progress className='imageupload_progress' value={progress} max='100' />
-      <input className='upload__caption' type='text' placeholder='Enter a caption' onChange={event => setCaption(event.target.value)} value={caption} />
-      <input className='upload_fileEntry' type='file' onChange={handleChange} />
-      <Button className='upload__button' onClick={handleUpload}>
+      <input className='upload__caption form-control' type='text' placeholder='Enter a caption' onChange={event => setCaption(event.target.value)} value={caption} />
+      <input className='upload_fileEntry form-control' type='file' onChange={handleChange} />
+      <Button className='upload__button btn btn-outline-primary' onClick={handleUpload}>
           Upload
       </Button>
     </div>
