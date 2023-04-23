@@ -74,14 +74,14 @@ function Profile() {
                                     className={`btn btn-outline-info ${
                                         theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                                     }`}
-                                    onClick={()=>{navi("*")}}>
+                                    onClick={()=>{navi("/")}}>
                                     Home</button>
                                 <button
                                     type="button"
                                     className={`btn btn-outline-info ${
                                         theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                                     }`}
-                                    onClick={() => {auth.signOut(); navi("*")}}
+                                    onClick={() => {auth.signOut(); navi("/")}}
                                 >
                                     Logout
                                 </button>

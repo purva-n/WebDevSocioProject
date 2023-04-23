@@ -70,6 +70,7 @@ const Pages = ({route}) => {
 
     useEffect(() => {
 
+
       db.collection('pages').onSnapshot(snapshot => {
           setPages(snapshot.docs.map((doc) =>doc.data()));
           snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
@@ -313,7 +314,7 @@ const Pages = ({route}) => {
                           className={`btn btn-outline-info ${
                               theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                           }`}
-                          onClick={()=>{navi("*")}}>
+                          onClick={()=>{navi("/")}}>
                         Home</button>
                       <button
                           type="button"
@@ -338,8 +339,7 @@ const Pages = ({route}) => {
                           className={`btn btn-outline-info ${
                               theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                           }`}
-                          onClick={() => {auth.signOut(); navi("*")}}
-                      >
+                          onClick={() => {auth.signOut(); navi("/")}}>
                         Logout
                       </button>
                     </div>

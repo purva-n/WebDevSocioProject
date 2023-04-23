@@ -61,6 +61,7 @@ function Home() {
   const [newPageName, setNewPageName] = useState('');
   const [newPageId, setNewPageId] = useState('');
   const [search, setSearch] = useState('');
+  const [role, setRole] = useState('user');
 
   const [user, setUser] = useState(null);
   const [postusername, setPostUserName] = useState('');
@@ -172,7 +173,8 @@ const createUser = (user) => {
           username: username,
           email: email,
           imageUrl: "",
-          fileName: ""
+          fileName: "",
+          role: role
       }).then(r => console.log("profile added in profile section"));
     })
     .catch((error) => alert(error.message));
@@ -184,6 +186,13 @@ const createUser = (user) => {
    auth
     .signInWithEmailAndPassword(email, password)
     .catch((error) => alert(error.message))
+
+     db.collection('profile').where('username', '==', username).get()
+         .then(r => {
+             r.forEach(doc => {
+                 setRole(doc.get('role'));
+             })
+         });
 
     setOpenSignIn(false);
  }
@@ -268,6 +277,15 @@ const createUser = (user) => {
               onChange={(e)=> setPassword(e.target.value)}
             />
 
+              <select name="Role" className="form-select" defaultValue="user" value={role} onChange={(e) => setRole(e.target.value)}>
+                  <option value="admin">
+                    Admin
+                  </option>
+                  <option value="user">
+                    User
+                  </option>
+              </select>
+
             <Button type='submit' onClick={signUp}>Sign Up</Button>
             <center>Already have an account yet? <Button onClick={registerFromSignUp}>Login</Button></center>
           </form>
@@ -293,8 +311,16 @@ const createUser = (user) => {
           </select>
             <input type='text' style={{ visibility: "hidden" }}></input>
             <button type='submit' className='btn btn-dark' onClick={openNewPage}>Open Page</button>
-            <center>Wish to create a new page?</center>
-            <center><Button onClick={createPagesMod} className='btn btn-dark'>Create New Page</Button></center>
+              {
+                  role === 'admin' ? (
+                      <>
+                          <center>Wish to create a new page?</center>
+                          <center><Button onClick={createPagesMod} className='btn btn-dark'>Create New Page</Button></center>
+                      </>
+                  ) : (
+                      <></>
+                  )
+              }
           </form>
         </div>
       </Modal>
@@ -383,8 +409,9 @@ const createUser = (user) => {
                       className={`btn btn-outline-info ${
                           theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                       }`}
-                      onClick={()=>{navi("*")}}>
-                    Home</button>
+                      onClick={()=>{navi("/")}}>
+                    Home
+                  </button>
                   <button
                       type="button"
                       className={`btn btn-outline-info ${
@@ -408,7 +435,7 @@ const createUser = (user) => {
                       className={`btn btn-outline-info ${
                           theme === "light" ? "btn-outline-dark" : "btn-outline-light"
                       }`}
-                      onClick={() => {auth.signOut(); navi("*")}}
+                      onClick={() => {auth.signOut(); navi("/")}}
                   >
                     Logout
                   </button>
