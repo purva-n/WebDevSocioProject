@@ -6,8 +6,7 @@ function renderMonthOptions() {
     return months.getMonths().map( (m, i) => {
         return <option
             key={i}
-            value={i}
-        >
+            value={i}>
             {m.shortName}
         </option>
     });
@@ -51,42 +50,47 @@ export default function EditableUserProfile({
 
     calcButtonTextColor(color);
 
-    return <>
-        <Group>            
-            <h2>Name:</h2>
-            <input
+    return( <>
+        <div className="row">
+            <div className="col-3"><h4>Name:</h4></div>
+            <div className="col-9">
+                <input
+                className="form-text"
                 type='text'
                 value={name}
-                onChange={e => setName(e.target.value)}
-            />            
-        </Group>
-        <Group>            
-            <h2>Birthday:</h2>            
-            
-            <select
+                onChange={e => setName(e.target.value)} /> </div>
+        </div>
+        <div className="row">
+            <div className="col-3"><h4>Birthday:</h4></div>
+            <div className="col-4">
+                <select
                 value={month}
-                onChange={e => setMonth(bound(e.target.value, 0, 11))}
-            >
+                onChange={e => setMonth(bound(e.target.value, 0, 11))}>
                 {renderMonthOptions()}
             </select>
-            <input
+            </div>
+            <div className="col-4">
+                <input
                 type='number'
                 value={day}
                 onChange={e => setDay(bound(e.target.value, 1, maxDay))}
                 style={{width: "50px"}}
             />
-        </Group>
-        <Group>            
-            <h2>Favourite Color:</h2>
-            <input
+            </div>
+        </div>
+        <div className="row">
+            <div className="col-3"><h4>Fav Color:</h4></div>
+            <div className="col-9">
+                <input
                 type="color"
                 value={color}
                 onChange={e => setColor(e.target.value)}
-            />
-        </Group>
-        <Group>
-            <button style={buttonStyle} onClick={handleSaveClicked}>Save</button>
-            <button style={buttonStyle} onClick={handleCancelClicked}>Cancel</button>
-        </Group>
-    </>
+                />
+            </div>
+        </div>
+        <div className="row">
+            <button style={buttonStyle} className="btn" onClick={handleSaveClicked}>Save</button>
+            <button style={buttonStyle} className="btn" onClick={handleCancelClicked}>Cancel</button>
+        </div>
+    </>)
 }

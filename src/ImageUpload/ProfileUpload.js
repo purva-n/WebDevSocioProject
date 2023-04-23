@@ -17,6 +17,9 @@ function ProfileUpload({username}) {
     };
 
     const handleUpload = () => {
+        if(image == null) {
+            return;
+        }
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
             "state_changed",
@@ -41,6 +44,8 @@ function ProfileUpload({username}) {
                     .then(url =>{
                         // post image inside the database
 
+                        db.collection('profile').get({username: username}).then()
+
                         db.collection('profile').add({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             fileName: image.name,
@@ -56,12 +61,12 @@ function ProfileUpload({username}) {
 
   return (
     <div className='imageupload'>
-      <input className='upload_fileEntry' type='file' onChange={handleChange} />
-      <Button className='upload__button' onClick={handleUpload}>
+      <input className='upload_fileEntry form-control' type='file' onChange={handleChange} />
+      <Button className='upload__button btn btn-primary' onClick={handleUpload}>
           Upload
       </Button>
     </div>
   )
 }
 
-export default ProfileUpload
+export default ProfileUpload;
