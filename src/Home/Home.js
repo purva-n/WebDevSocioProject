@@ -452,11 +452,14 @@ const createUser = (user) => {
       ) : (
           <div className="container-fluid">
             <div className="row">
-              <div className="col-md-6">
-                <img src={bg} className="img-fluid" alt="background" />
+              <div className="col-6 col-xs-0 fill">
+                <img src={bg} alt="background" />
               </div>
-              <div className="col-md-3 app__loginContainer">
-                <div className="card" style={getModalStyle()}>
+              <div className="col-6 col-xs-12 app__loginContainer">
+                  <div>
+
+                  </div>
+                <div className="card " style={getModalStyle()}>
                   <div className="card-img" id="sign_block">
                     <img className="connect" src={connect} alt="connect" />
                   </div>
@@ -464,8 +467,7 @@ const createUser = (user) => {
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={() => setOpenSignIn(true)}
-                    >
+                        onClick={() => setOpenSignIn(true)}>
                       <i className="bi bi-person-check-fill"></i> Sign In
                     </button>
                     <button
