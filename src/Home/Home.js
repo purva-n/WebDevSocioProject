@@ -94,6 +94,13 @@ useEffect(() => {
 }, [user, username]);
 
 useEffect(() => {
+    db.collection('profile').where('username', '==', username).get()
+        .then(r => {
+            r.forEach(doc => {
+                setRole(doc.get('role'));
+            })
+        });
+
     db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
         console.log(snapshot);
         setPosts(snapshot.docs.map(doc => ({
@@ -186,13 +193,6 @@ const createUser = (user) => {
    auth
     .signInWithEmailAndPassword(email, password)
     .catch((error) => alert(error.message))
-
-     db.collection('profile').where('username', '==', username).get()
-         .then(r => {
-             r.forEach(doc => {
-                 setRole(doc.get('role'));
-             })
-         });
 
     setOpenSignIn(false);
  }

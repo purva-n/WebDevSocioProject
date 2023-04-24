@@ -51,6 +51,7 @@ const Pages = ({route}) => {
       const [openPages, setOpenPages] = useState(false);
       const [openPagesModal, setOpenPagesModal] = useState(false);
       const [createPagesModal, setCreatePagesModal] = useState(false);
+      const [role, setRole] = useState('user');
 
       console.log(state);
       const [username, setUsername] = useState(state.username);
@@ -70,6 +71,12 @@ const Pages = ({route}) => {
 
     useEffect(() => {
 
+        db.collection('profile').where('username', '==', username).get()
+            .then(r => {
+                r.forEach(doc => {
+                    setRole(doc.get('role'));
+                })
+            });
 
       db.collection('pages').onSnapshot(snapshot => {
           setPages(snapshot.docs.map((doc) =>doc.data()));
@@ -241,7 +248,12 @@ const Pages = ({route}) => {
               </select>
 
                 <Button type='submit' onClick={()=>{navi("/pages",{state:{username,password,user,newPageName,email,theme}})}}><h2>Open Page</h2></Button>
-                <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+                  { role === 'admin' ? (
+                      <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+                  ) : (
+                      <></>
+                  )}
+
               </form>
             </div>
           </Modal>
