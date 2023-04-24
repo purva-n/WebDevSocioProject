@@ -107,9 +107,9 @@ function Profile() {
                                 }
                             </div>
 
-                            <div className="row">
-                                <img className='profile__img align-items-center' src ={imageUrl}  alt="profile photo"/>
-                            </div>
+                            <center>
+                                <img className='profile__img' src ={imageUrl}/>
+                            </center>
                             {
                                 username === myusername ? (
                                     <ProfileUpload className="uploader" username={username}/>
