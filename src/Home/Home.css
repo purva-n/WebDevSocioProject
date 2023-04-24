@@ -1,0 +1,38 @@
+.flex-container {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-box {
+    margin: 10px;
+}
+
+.fill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100vh;
+    height: 100vh;
+    object-fit: contain;
+}
+
+.fill img {
+    flex-shrink: 0;
+    max-width: 100%;
+    max-height: 100%
+}
+
+.connect {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 50%;
+}
+
+#sign_block {
+    text-align: center;
+}
+
+.home-page-top {
+    margin-top: 70px;
+}

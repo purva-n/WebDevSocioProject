@@ -6,15 +6,22 @@
   height: 100vh;
   background-color: var(--background);
 }
+.profile-app {
+  height: 100vh;
+  top: 50%;
+  left: 50%;
+  background-color: var(--background);
+}
 
 .App {
   top: 50%;
   left: 50%;
+  background-color: var(--background);
 }
 
 .app__posts {
   top: 50%;
-    left: 50%;
+  left: 50%;
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -23,24 +30,39 @@
 
 .app__header {
   display: flex;
-  /*background-color: rgb(0,0,20);*/
   background-color: var(--header-bg);
-  padding: 20px;
   border-bottom: 1px solid blue;
-  object-fit: contain;
-  justify-content: space-between;
   position: fixed;
+  max-height: 70px;
   top: 0;
   width: 100%;
-  z-index: 3;
-  padding-right: 600px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.app_headerImage {
+.flex-box {
+  padding: 10px;
+}
+
+.home-component {
+  margin-left: 10px;
+}
+
+.logo-img-component{
+  margin-left: 500px;
+}
+
+.display-name-component {
+  display: flex; /* use flexbox layout */
+  align-items: center; /* vertically center items */
+  margin-left: 500px;
+}
+
+/*.app_headerImage {
   padding-left: 600px;
   height: 100px;
   width: 150px;
-}
+}*/
 
 .app_Image {
   height: 50px;
@@ -54,7 +76,7 @@
 }
 
 .app__loginContainer {
-  padding-right: 20px;
+  padding-right: 20px !important;
 }
 
 .app__uploadBox {

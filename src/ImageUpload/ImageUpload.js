@@ -1,13 +1,21 @@
-import { Button } from '@material-ui/core'
+import {Box, Button, LinearProgress, Typography} from '@material-ui/core'
 import React, { useState } from 'react'
 import {db, storage} from '../firebase'
 import firebase from 'firebase'
 import './ImageUpload.css'
+import * as PropTypes from "prop-types";
+
+function CheckIcon(props) {
+    return null;
+}
+
+CheckIcon.propTypes = {color: PropTypes.string};
 
 function ImageUpload({username}) {
     const [image, setImage] = useState(null);
     //const [url, setUrl] = useState('');
     const [progress, setProgress] = useState(0);
+    //const [isSuccess, setIsSuccess] = useState(false);
     const [caption, setCaption] = useState('');
 
     const handleChange = (e) =>  {
@@ -46,7 +54,7 @@ function ImageUpload({username}) {
                             caption: caption,
                             fileName: image.name,
                             imageUrl: url,
-                            username: username 
+                            username: username
                         });
                         setProgress(0);
                         setCaption('');
@@ -58,13 +66,20 @@ function ImageUpload({username}) {
 
   return (
     <div className='imageupload'>
-      <input className='upload__caption' type='text' placeholder='Enter a caption' onChange={event => setCaption(event.target.value)} value={caption} />
-      <input className='upload_fileEntry' type='file' onChange={handleChange} />
-      <Button className='upload__button' onClick={handleUpload}>
-          Upload
-      </Button>
+      <input className='upload__caption form-control' type='text' placeholder='Enter a caption' onChange={event => setCaption(event.target.value)} value={caption} />
+      <div className="flex-container">
+          <div className="flex-box"><input className='upload_fileEntry form-control' type='file' onChange={handleChange} /></div>
+          <div className="flex-box">
+                  <Button type="button" className='upload__button btn btn-success' onClick={handleUpload}>
+                      {/*{isSuccess ? (<span className="text-success">POST</span>) : (<span className="text-dark">POST</span>) }*/}
+                      POST
+                  </Button>
+                  {/*<LinearProgress variant="determinate" value={progress} />*/}
+          </div>
+      </div>
+
     </div>
   )
 }
 
-export default ImageUpload
+export default ImageUpload;

@@ -5,7 +5,7 @@
     margin-right: auto;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: lightskyblue;
+    background-color: var(--header-bg);
     border: 1px solid rgb(43, 41, 41);
     border-radius: 10px;
     
@@ -32,4 +32,10 @@
 .imageupload_progress {
     width: 100%;
 
+}
+
+.flex-container {
+    display : flex;
+    justify-content: space-evenly;
+    align-items: center;
 }

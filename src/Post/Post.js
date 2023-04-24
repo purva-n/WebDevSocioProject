@@ -11,6 +11,7 @@ import {
 } from '@charkour/react-reactions';
 import Avatar from '@material-ui/core/Avatar'
 import { useNavigate } from 'react-router-dom';
+import {NavLink} from "reactstrap";
 
 function Post( {postId, user, username, postusername, caption, imageUrl, fileName}) {
   const navi= useNavigate();
@@ -21,24 +22,43 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
   const [counters, setCounters] = useState([]);
   const [showSelector, setShowSelector] = useState(false);
 
-  const handleAdd = () => setShowSelector(true);
+  const handleAdd = () => {
+      if(!showSelector) {
+        setCount(count - 1);
+      } else {
+        setCount(count + 1);
+      }
+    setShowSelector(true);
+  }
 
   const handleSelect = (emoji) => {
-      const index = _.findIndex(counters, { by: username })
+    const index = _.findIndex(counters, { by: username })
+
       if (index > -1) {
         setCounters([
             ...counters.slice(0, index),
-            { emoji, by: username },
             ...counters.slice(index + 1),
         ]);
-        setShowSelector(true);
+        if(!showSelector) {
+          setCount(count - 1);
+        }else{
+          setCount(count + 1);
+        }
+        setShowSelector(false);
       } else {
         setCounters([
             ...counters, { emoji, by: username }
         ]);
+        if(!showSelector) {
+          setCount(count - 1);
+        }else{
+          setCount(count + 1);
+        }
         setShowSelector(false);
       }
-      postLike({ emoji, by: username });
+      if(showSelector) {
+        postLike({emoji, by: username});
+      }
     };
 
   const postLike = (likeObject) => {
@@ -106,7 +126,6 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
       };
   }, [postId]);
 
-
   const postComment = (event) => {
     event.preventDefault();
 
@@ -124,32 +143,26 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
 
   return (
 
-    <div className='post'>
-
-        {postusername === username ?(
-                        <div className='post__delete'>
-                                    <button onClick={() => deletePost()}>X</button>
-                                </div>
-                    ):(
-                        <div className='post__delete'>
-                                </div>
-                    )}
-        <div className='post__header'>
+    <div className='card post'>
+        <div className='post__header row'>
         {/* header => avatar + user name */}
-            <Avatar 
-                className='post__avatar'
-                alt='RafehQazi'
-              
-            />
-            <h3 onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h3>
-            <h4 className='post__text'>{caption}</h4>
-
-
+            <Avatar className='post__avatar col-1' alt=''/>
+            <h4 className="col-9 fw-bold" onClick={()=>{navi("/profile",{state:{postusername, username}})}}>{postusername}</h4>
+            {postusername === username ?(
+                <div className="col-1">
+                    <button  onClick={() => deletePost()}><i className="bi bi-trash"></i></button>
+                </div>
+            ):(
+                <div className='col-1'></div>
+            )}
+        </div>
+        <div>
+            <h6 className='col-6 post__text'>{caption}</h6>
         </div>
 
 
         {/* Photo */}
-        {console.log(imageUrl)}
+        {/*console.log(imageUrl)*/}
 
             {caption.includes('mp4') ?(
                 <video className='post__image' controls>
@@ -169,7 +182,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
 
           {comments.map((comment)=>(
             <p>
-              <strong>{comment.username}: </strong>{comment.text}{count}
+              <strong>{comment.username}: </strong>{comment.text}
             </p>
           ))}
         </div>
@@ -177,7 +190,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
         {user  && (
           <form className='post__commentBox'>
           <input 
-            className='post__input'
+            className='post__input form-control'
             type='text'
             placeholder='Comment here'
             value={comment}
@@ -185,7 +198,7 @@ function Post( {postId, user, username, postusername, caption, imageUrl, fileNam
           />
 
           <button 
-            className='post__button'
+            className='post__button btn btn-primary'
             disabled={!comment}
             type='submit'
             onClick={postComment}

@@ -1,14 +1,14 @@
-import { Button } from '@material-ui/core'
+import {Button, LinearProgress} from '@material-ui/core'
 import React, { useState } from 'react'
 import {db, storage} from '../firebase'
-import firebase from 'firebase'
 import './ImageUpload.css'
 
-function ProfileUpload({username}) {
+function ProfileUpload({username, user}) {
     const [image, setImage] = useState(null);
     //const [url, setUrl] = useState('');
     const [progress, setProgress] = useState(0);
     const [caption, setCaption] = useState('');
+    const authUser = user;
 
     const handleChange = (e) =>  {
         if(e.target.files[0]) {
@@ -17,6 +17,9 @@ function ProfileUpload({username}) {
     };
 
     const handleUpload = () => {
+        if(image == null) {
+            return;
+        }
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
             "state_changed",
@@ -41,12 +44,24 @@ function ProfileUpload({username}) {
                     .then(url =>{
                         // post image inside the database
 
-                        db.collection('profile').add({
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            fileName: image.name,
-                            imageUrl: url,
-                            username: username 
+                    db.collection('profile').where('username', '==', username).get()
+                    .then((doc) => {
+                     doc.forEach((docu) => {
+                         docu.ref.update({
+                             imageUrl: url,
+                             fileName: image.name
+                         }).then(r =>
+                         console.log("updated ref")).catch((err) =>
+                         console.error("Error in updating imageUrl"));
                         });
+                    });
+
+                        // authUser.user.updateProfile({
+                        //     photoURL: url
+                        // }).then(r =>
+                        //     console.log(r)
+                        // );
+
                         setProgress(0);
                         setImage(null);
                     });
@@ -56,12 +71,13 @@ function ProfileUpload({username}) {
 
   return (
     <div className='imageupload'>
-      <input className='upload_fileEntry' type='file' onChange={handleChange} />
-      <Button className='upload__button' onClick={handleUpload}>
+      <input className='upload_fileEntry form-control' type='file' onChange={handleChange} />
+      <Button className='upload__button btn btn-primary' onClick={handleUpload}>
           Upload
       </Button>
+      <LinearProgress variant="determinate" value={progress} />
     </div>
   )
 }
 
-export default ProfileUpload
+export default ProfileUpload;

@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
-import logo from '../images/title.png';
-import bg from '../images/bg.png';
+import logo from '../images/socio.png';
+import bg from '../images/bg2.jpeg';
+import connect from '../images/connect.jpg';
 import '../App.css';
+import './Home.css';
 import Post from '../Post/Post'
 import Pages from '../Pages'
 import  {db, auth}  from '../firebase'
@@ -12,6 +14,9 @@ import {Button, Input} from '@material-ui/core';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import useLocalStorage from 'use-local-storage';
 import { useNavigate } from 'react-router-dom';
+import PostList from "../PostList/PostList";
+import {light} from "@material-ui/core/styles/createPalette";
+import firebase from "firebase";
 var axios = require('axios');
 
 function getModalStyle() {
@@ -50,17 +55,16 @@ function Home() {
   const [openPages, setOpenPages] = useState(false);
   const [openPagesModal, setOpenPagesModal] = useState(false);
   const [createPagesModal, setCreatePagesModal] = useState(false);
-
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [newPageName, setNewPageName] = useState('');
   const [newPageId, setNewPageId] = useState('');
   const [search, setSearch] = useState('');
+  const [role, setRole] = useState('user');
 
   const [user, setUser] = useState(null);
-
+  const [postusername, setPostUserName] = useState('');
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
   const switchTheme = () => {
@@ -76,6 +80,7 @@ useEffect(() => {
       console.log(authUser);
       setUser(authUser);
       setUsername(authUser.displayName);
+      setPostUserName(authUser.displayName);
     }
     else{
       //logout
@@ -89,29 +94,36 @@ useEffect(() => {
 }, [user, username]);
 
 useEffect(() => {
-  db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
-    console.log(snapshot);
-    setPosts(snapshot.docs.map(doc => ({
-      id: doc.id,
-      post: doc.data()})));
+    db.collection('profile').where('username', '==', username).get()
+        .then(r => {
+            r.forEach(doc => {
+                setRole(doc.get('role'));
+            })
+        });
+
+    db.collection('posts').orderBy('timestamp','desc').onSnapshot(snapshot => {
+        console.log(snapshot);
+        setPosts(snapshot.docs.map(doc => ({
+            id: doc.id,
+            post: doc.data()})));
     });
 
-  db.collection('pages').onSnapshot(snapshot => {
-      setPages(snapshot.docs.map(doc => ({
-          id: doc.id,
-          page: doc.data()})));
-      snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
+    db.collection('pages').onSnapshot(snapshot => {
+        setPages(snapshot.docs.map(doc => ({
+            id: doc.id,
+            page: doc.data()})));
+        snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
     });
 }, []);
 
 useEffect(() => {
     setFilteredPosts(posts.filter((post) =>
-            post.post.username.toLowerCase().includes(search.toLowerCase()) ||
-            post.post.caption.toLowerCase().includes(search.toLowerCase())
-      ));
+        post.post.username.toLowerCase().includes(search.toLowerCase()) ||
+        post.post.caption.toLowerCase().includes(search.toLowerCase())
+    ));
 
     console.log('Your value: ' + filteredPosts.length);
-  }, [search, posts]);
+}, [search, posts]);
 
 
 //--------------------------
@@ -147,19 +159,33 @@ const createUser = (user) => {
       //   });
 }
 //----------------------------
- const signUp = (event) => {
-   event.preventDefault();
-   auth
-   .createUserWithEmailAndPassword(email, password)
-   .then((authUser) => {
-    createUser({username:username,secret:password})
-     return authUser.user.updateProfile({
-       displayName: username
-     })
-   })
-   .catch((error) => alert(error.message));
+  const signUp = (event) => {
+    event.preventDefault();
 
- }
+    if (username.length > 5) {
+      alert('Username must be 5 characters or less');
+      return;
+    }
+
+    auth
+    .createUserWithEmailAndPassword(email, password)
+    .then((authUser) => {
+      createUser({ username: username, secret: password });
+      authUser.user.updateProfile({
+          displayName: username,
+      }).then(r  => console.log("user display name set"));
+
+      db.collection('profile').add({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          username: username,
+          email: email,
+          imageUrl: "",
+          fileName: "",
+          role: role
+      }).then(r => console.log("profile added in profile section"));
+    })
+    .catch((error) => alert(error.message));
+  };
 
  const signIn = (event) => {
    event.preventDefault();
@@ -223,32 +249,44 @@ const createUser = (user) => {
         onClose={() => setOpen(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
         <center><img className='app_Image' src={logo} alt='header image' /></center>
-          <center><h1>Register Yourself</h1></center>
+          <center><h3>Register Yourself</h3></center>
           <form className='app__signup'>
+              <div className="row">
+                  <div className="col-1"><i className=""></i></div>
+              </div>
           <Input
-              placeholder='username'
+              placeholder='Create username'
               type='text'
               value={username}
               onChange={(e)=> setUsername(e.target.value)}
             />
 
             <Input
-              placeholder='email'
+              placeholder='E-mail'
               type='text'
               value={email}
               onChange={(e)=> setEmail(e.target.value)}
             />
 
             <Input
-              placeholder='password'
+              placeholder='Password'
               type='password'
               value={password}
               onChange={(e)=> setPassword(e.target.value)}
             />
 
-            <Button type='submit' onClick={signUp}>SignUP</Button>
+              <select name="Role" className="form-select" defaultValue="user" value={role} onChange={(e) => setRole(e.target.value)}>
+                  <option value="admin">
+                    Admin
+                  </option>
+                  <option value="user">
+                    User
+                  </option>
+              </select>
+
+            <Button type='submit' onClick={signUp}>Sign Up</Button>
             <center>Already have an account yet? <Button onClick={registerFromSignUp}>Login</Button></center>
           </form>
         </div>
@@ -259,21 +297,30 @@ const createUser = (user) => {
         onClose={() => setOpenPagesModal(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
           <center><img className='app_Image' src={logo} alt='header' /></center>
           <form className='app__signup'>
 
           <select name="pages" onChange={(e)=> setNewPageId(e.target.value)}>
                   <option value="">Choose any page</option>
-          {
+                    {
                          pages.length && pages.map(({id, page}) => (
                          <option value={id}>{page.name}</option>
                          ))
                     }
           </select>
-
-            <button type='submit' onClick={openNewPage}>Open Page</button>
-            <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+            <input type='text' style={{ visibility: "hidden" }}></input>
+            <button type='submit' className='btn btn-dark' onClick={openNewPage}>Open Page</button>
+              {
+                  role === 'admin' ? (
+                      <>
+                          <center>Wish to create a new page?</center>
+                          <center><Button onClick={createPagesMod} className='btn btn-dark'>Create New Page</Button></center>
+                      </>
+                  ) : (
+                      <></>
+                  )
+              }
           </form>
         </div>
       </Modal>
@@ -284,7 +331,7 @@ const createUser = (user) => {
               onClose={() => setCreatePagesModal(false)}
               >
 
-              <div style={modalStyle} className={classes.paper}>
+              <div style={modalStyle} className={`card ${classes.paper}`}>
                 <center><img className='app_Image' src={logo} alt='header image' /></center>
                 <form className='app__signup'>
 
@@ -303,90 +350,139 @@ const createUser = (user) => {
         onClose={() => setOpenSignIn(false)}
         >
 
-        <div style={modalStyle} className={classes.paper}>
+        <div style={modalStyle} className={`card ${classes.paper}`}>
           <center><img className='app_Image' src={logo} alt='header image' /></center>
           <form className='app__signup'>
-            <Input
-              placeholder='email'
-              type='text'
-              value={email}
-              onChange={(e)=> setEmail(e.target.value)}
-            />
+              <div className="mt-2 row">
+                  <div className="col-1"><i className="bi bi-envelope bi-envelope-at"></i></div>
+                  <div className="col-11">
+                      <Input
+                      className="w-100"
+                      placeholder='E-mail address'
+                      type='text'
+                      value={email}
+                      onChange={(e)=> setEmail(e.target.value)}/>
+                  </div>
+              </div>
 
-            <Input
-              placeholder='password'
-              type='password'
-              value={password}
-              onChange={(e)=> setPassword(e.target.value)}
-            />
+              <div className="mt-2 row">
+                  <div className="col-1"><i className="bi bi-key"></i></div>
+                  <div className="col-11">
+                      <Input
+                          className="w-100"
+                          placeholder='Password'
+                          type='password'
+                          value={password}
+                          onChange={(e)=> setPassword(e.target.value)}
+                      />
+                  </div>
+              </div>
 
-            <Button type='submit' onClick={signIn}><h2>Login</h2></Button>
-            <center>Dont have an account yet? <Button onClick={signUpFromLogin}>Sign Up</Button></center>
+            <button className="btn btn-outline-dark mt-2" type='submit' onClick={signIn}>Sign In</button>
+              <div className="row mt-2">
+                  <div className="col-8">Don't have an account yet?</div>
+                  <div className="col-4"><button type="button" className="btn btn-outline-primary" onClick={signUpFromLogin}>Sign Up</button></div>
+              </div>
           </form>
         </div>
       </Modal>
 {/* ------------------------------------------------------------------ */}
 
-      {/* Header */}
-      <div className='app__header' data-theme={theme}>
-        <center><img
-          className='app_headerImage'
-          src={logo}
-          alt='header image'
-        /></center>
+      {/*Header*/}
+      <div className="app__header">
+        <img className="logo-img-component" src={logo} alt="header image"/>
+        {user ? (
+
+            <div className="display-name-component h4" onClick={() => {navi("/profile",{state:{postusername, username}})}}><i className="bi bi-person-fill"></i>{user.displayName}</div>
+        ) : (
+            <div className="display-name-component h2"></div>
+        )}
       </div>
 
-      <div className='app__uploadBox'>
-      {user?.displayName ? (
-        <br/>
-      ):(
-        <h4>Sorry, you need to login to upload</h4>
-      )}
-      </div>
-      <div className='app__uploadBox' data-theme={theme}>
-            {user ?(
-                        <div className='app__loginContainer'>
-                        <button onClick={switchTheme}>
-                                                        Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-                                                      </button>
-                                                      <button onClick={openPagesMod}>Pages</button>
-
-                                                      <button onClick={()=>{navi("/chat",{state:{username,password}})}}>Chat Feature</button>
-                            <button onClick={() => auth.signOut()}>Logout</button>
-                        </div>
-                    ):(
-                      <div className='app__loginContainer'>
-                        <button color="#841584" onClick={() => setOpenSignIn(true)} >Sign In</button>
-                        <button color="#841584" onClick={() => setOpen(true)} >Sign Up</button>
-                      </div>
-                    )}
-
-
-
-            {user?.displayName ? (
-
-                          <div className='app__posts' data-theme={theme}>
-                                  <div className='app__postsLeft'>
-                                  <center><input type="text" placeholder="Search" onChange={(e) => setSearch(e.target.value)} /></center>
-                                  <ImageUpload username={user.displayName}/>
-                                  {
-                                    filteredPosts && filteredPosts.map(({id, post}) =>(
-                                      <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
-                                    ))
-                                  }
-                                  </div>
-
-
-
-                                </div>
-                        ):(
-                          <div className='app__posts'><img src={bg} /></div>
-                        )}
-
-
+      {user ? (
+          <div className="container home-page-top">
+            <div className="row">
+              <div className="col-md-2 app__loginContainer">
+                <div className="btn-group-vertical ">
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={()=>{navi("/")}}>
+                    Home
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={openPagesMod}
+                  >
+                    Pages
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={switchTheme}
+                  >
+                    Switch to {theme === "light" ? "Dark" : "Light"} Theme
+                  </button>
+                  <button
+                      type="button"
+                      className={`btn btn-outline-info ${
+                          theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                      }`}
+                      onClick={() => {auth.signOut(); navi("/")}}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+              <div className="col-md-8 align-content-center">
+                <div className="app__posts" data-theme={theme}>
+                  <PostList filteredPosts={filteredPosts} user={user} username={username} setSearch={setSearch}/>
+                </div>
+              </div>
+              <div className="col-md-2 align-content-center"></div>
             </div>
-    </div>
-  );
+          </div>
+      ) : (
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-md-6">
+                <img src={bg} className="img-fluid" alt="background" />
+              </div>
+              <div className="col-md-3 app__loginContainer">
+                <div className="card" style={getModalStyle()}>
+                  <div className="card-img" id="sign_block">
+                    <img className="connect" src={connect} alt="connect" />
+                  </div>
+                  <div className="btn-group card-footer app__loginContainer">
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => setOpenSignIn(true)}
+                    >
+                      <i className="bi bi-person-check-fill"></i> Sign In
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={() => setOpen(true)}
+                    >
+                      <i className="bi bi-person-plus-fill"></i> Sign Up
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      )}
+    </div>);
 }
 
 export default Home;
+

@@ -13,7 +13,7 @@ code {
 }
 
 :root {
-  --background: white;
+  --background: powderblue;
   --header-bg: lightskyblue;
   --text-primary: black;
   --text-secondary: royalblue;
@@ -21,9 +21,9 @@ code {
 }
 
 [data-theme='dark'] {
-  --background: black;
-  --header-bg: darkblue;
-  --text-primary: white;
+  --background: #455496;
+  --header-bg: #5367b7;
+  --text-primary: lightblue;
   --text-secondary: grey;
   --accent: darkred;
 }

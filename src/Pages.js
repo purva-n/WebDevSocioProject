@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
-import logo from './images/title.png';
+import logo from './images/socio.png';
 import bg from './images/bg.png';
 import './App.css';
 import Post from './Post/Post'
@@ -11,6 +11,9 @@ import {Button, Input} from '@material-ui/core';
 import PagePostUpload from './ImageUpload/PagePostUpload';
 import useLocalStorage from 'use-local-storage';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+import PostList from "./PostList/PostList";
+import connect from "./images/connect.jpg";
 
 function getModalStyle() {
   const top = 50 ;
@@ -48,9 +51,11 @@ const Pages = ({route}) => {
       const [openPages, setOpenPages] = useState(false);
       const [openPagesModal, setOpenPagesModal] = useState(false);
       const [createPagesModal, setCreatePagesModal] = useState(false);
+      const [role, setRole] = useState('user');
 
       console.log(state);
       const [username, setUsername] = useState(state.username);
+      const [postusername, setPostUserName] = useState(state.username);
       const [password, setPassword] = useState(state.password);
       const [email, setEmail] = useState(state.email);
       const [newPageName, setNewPageName] = useState(state.newPageName);
@@ -66,6 +71,13 @@ const Pages = ({route}) => {
 
     useEffect(() => {
 
+        db.collection('profile').where('username', '==', username).get()
+            .then(r => {
+                r.forEach(doc => {
+                    setRole(doc.get('role'));
+                })
+            });
+
       db.collection('pages').onSnapshot(snapshot => {
           setPages(snapshot.docs.map((doc) =>doc.data()));
           snapshot.docs.map((doc) =>doc.data()).forEach((doc) => console.log('Your page:  ' + doc.name));
@@ -74,6 +86,7 @@ const Pages = ({route}) => {
       db.collection('pages')
       .doc(newPageId)
       .collection('posts')
+      .orderBy('timestamp',"desc")
       .onSnapshot(snapshot => {
           setPagePosts(snapshot.docs.map((doc) => ({
                id: doc.id,
@@ -177,10 +190,9 @@ const Pages = ({route}) => {
       }
 
       return (
+
         <div className="App">
-
     {/* ------------------------------------------------------------------ */}
-
           <Modal
             open={open}
             onClose={() => setOpen(false)}
@@ -194,7 +206,7 @@ const Pages = ({route}) => {
                   placeholder='username'
                   type='text'
                   value={username}
-                  onChange={(e)=> setUsername(e.target.value)}
+                  onChange={(e)=> {setUsername(e.target.value); setPostUserName(e.target.value)}}
                 />
 
                 <Input
@@ -236,7 +248,12 @@ const Pages = ({route}) => {
               </select>
 
                 <Button type='submit' onClick={()=>{navi("/pages",{state:{username,password,user,newPageName,email,theme}})}}><h2>Open Page</h2></Button>
-                <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+                  { role === 'admin' ? (
+                      <center>Wish to create a new page? <Button onClick={createPagesMod}>Create New Page</Button></center>
+                  ) : (
+                      <></>
+                  )}
+
               </form>
             </div>
           </Modal>
@@ -290,50 +307,70 @@ const Pages = ({route}) => {
           </Modal>
     {/* ------------------------------------------------------------------ */}
 
-          {/* Header */}
-          <div className='app__header' data-theme={theme}>
-            <center><img
-              className='app_headerImage'
-              src={logo}
-              alt='header'
-            /></center>
+          {/*Header*/}
+          <div className="app__header">
+            <img className="logo-img-component" src={logo} alt="header image"/>
+            {username ? (
+                <div className="display-name-component h4" onClick={() => {navi("/profile",{state:{postusername, username}})}}><i className="bi bi-person-fill"></i>{username}</div>
+            ) : (
+                <div className="display-name-component h2"></div>
+            )}
           </div>
 
-          <div className='app__uploadBox'>
-          {user?.displayName ? (
-            <br/>
-          ):(
-            <h4>Sorry, you need to login to upload</h4>
-          )}
-          </div>
-          <div className='app__uploadBox' data-theme={theme}>
-                <div className='app__loginContainer'>
-                                                <button onClick={() => auth.signOut()}>Logout</button>
-                                            </div>
-
-                <button onClick={switchTheme}>
-                                    Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme
-                                  </button>
-                                  <button onClick={openPagesMod}>Pages</button>
-                                  <button onClick={()=>{navi("/",{state:{username,password}})}}>Back to Home</button>
-
-                <div className='app__posts' data-theme={theme}>
-
-                                                      <div className='app__postsLeft'>
-                                                      <PagePostUpload username={username} newPageId={newPageId} />
-                                                      {
-                                                        pagePosts && pagePosts.map(({id, post}) =>(
-                                                          <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
-                                                        ))
-                                                      }
-                                                      </div>
-
-
-
-                                                    </div>
-
-
+          <div className="container home-page-top">
+                <div className="row">
+                  <div className="col-md-2 app__loginContainer">
+                    <div className="btn-group-vertical ">
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={()=>{navi("/")}}>
+                        Home</button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={openPagesMod}
+                      >
+                        Pages
+                      </button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={switchTheme}
+                      >
+                        Switch to {theme === "light" ? "Dark" : "Light"} Theme
+                      </button>
+                      <button
+                          type="button"
+                          className={`btn btn-outline-info ${
+                              theme === "light" ? "btn-outline-dark" : "btn-outline-light"
+                          }`}
+                          onClick={() => {auth.signOut(); navi("/")}}>
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-md-8 align-content-center">
+                    <div className='app__posts' data-theme={theme}>
+                      <div className='app__postsLeft'>
+                        <PagePostUpload username={username} newPageId={newPageId} />
+                        {
+                          pagePosts && pagePosts.map(({id, post}) =>(
+                              <Post key={id} postId={id} user={user} username={username} postusername={post.username} caption={post.caption} imageUrl={post.imageUrl} fileName={post.fileName}/>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-2 align-content-center"></div>
                 </div>
+              </div>
         </div>
       );
 }
